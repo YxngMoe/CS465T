@@ -2,25 +2,22 @@ const mongoose = require('mongoose');
 const host = process.env.DB_HOST || '127.0.0.1';
 const dbURI = `mongodb://${host}/travlr`;
 const readLine = require('readline');
-// avoid 'current Server Discovery and Monitoring engine is deprecated'
-mongoose.set('useUnifiedTopology', true);
+
+// Updated connection setup without deprecated options
 const connect = () => {
-    setTimeout(() => mongoose.connect(dbURI, {
-        useNewUrlParser: true,
-        useCreateIndex: true
-    }), 1000);
+    setTimeout(() => mongoose.connect(dbURI), 1000);
 };
 
 mongoose.connection.on('connected', () => {
-    // connection established
+    console.log('Mongoose connected to ' + dbURI);
 });
 
 mongoose.connection.on('error', err => {
-    // handle error
+    console.log('Mongoose connection error: ' + err);
 });
 
 mongoose.connection.on('disconnected', () => {
-    // handle disconnection
+    console.log('Mongoose disconnected');
 });
 
 if (process.platform === 'win32') {
@@ -36,7 +33,8 @@ if (process.platform === 'win32') {
 
 const gracefulShutdown = (msg, callback) => {
     mongoose.connection.close(() => {
-        // handle shutdown
+        console.log('Mongoose disconnected through ' + msg);
+        callback();
     });
 };
 
@@ -63,5 +61,5 @@ process.on('SIGTERM', () => {
 
 connect();
 
-// bring in the Mongoose schema
+// Bring in the Mongoose schema
 require('./travlr');

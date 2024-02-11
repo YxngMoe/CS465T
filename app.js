@@ -4,7 +4,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const hbs = require('hbs'); // Make sure this line is added
-
+require('./app_api/models/db');
 
 const indexRouter = require('./app_server/routes/index');
 const usersRouter = require('./app_server/routes/users');
@@ -15,7 +15,7 @@ const mealsRouter = require('./app_server/routes/meals');
 const roomsRouter = require('./app_server/routes/rooms');
 const contactRouter = require('./app_server/routes/contact');
 const { meals } = require('./app_server/controllers/meals');
-
+const apiRouter = require('./app_api/routes/index');
 const app = express();
 
 // view engine setup
@@ -40,6 +40,7 @@ app.use('/news', newsRouter);
 app.use('/meals', mealsRouter);
 app.use('/rooms', roomsRouter);
 app.use('/contact', contactRouter);
+app.use('/api', apiRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
